@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator & Games App</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            color: #444;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        /* Calculator Styles */
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .calculator-display {
+            grid-column: span 4;
+            background-color: #f8f8f8;
+            padding: 10px;
+            text-align: right;
+            font-size: 24px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            height: 60px;
+        }
+        
+        .calculator button {
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #e0e0e0;
+            transition: background-color 0.2s;
+        }
+        
+        .calculator button:hover {
+            background-color: #d0d0d0;
+        }
+        
+        .calculator button.operator {
+            background-color: #ff9800;
+            color: white;
+        }
+        
+        .calculator button.operator:hover {
+            background-color: #f57c00;
+        }
+        
+        .calculator button.clear {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .calculator button.clear:hover {
+            background-color: #d32f2f;
+        }
+        
+        /* Number Guessing Game Styles */
+        .guessing-game {
+            text-align: center;
+        }
+        
+        .guessing-game input {
+            padding: 10px;
+            font-size: 16px;
+            width: 100px;
+            text-align: center;
+            margin: 10px;
+        }
+        
+        .guessing-game button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        
+        .guessing-game button:hover {
+            background-color: #388E3C;
+        }
+        
+        .guessing-game .message {
+            margin: 15px 0;
+            font-size: 18px;
+            min-height: 27px;
+        }
+        
+        /* Memory Game Styles */
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .memory-card {
+            height: 80px;
+            background-color: #2196F3;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .memory-card.flipped {
+            background-color: white;
+            color: #2196F3;
+            border: 2px solid #2196F3;
+        }
+        
+        .memory-card.matched {
+            background-color: #4CAF50;
+            cursor: default;
+        }
+        
+        .memory-controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .memory-controls button {
+            padding: 10px 20px;
+            background-color: #673AB7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .memory-controls button:hover {
+            background-color: #5E35B1;
+        }
+        
+        .memory-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+        
+        /* Tab Navigation */
+        .tab-navigation {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .tab-button {
+            padding: 10px 20px;
+            background-color: #ddd;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .tab-button.active {
+            background-color: white;
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calculator & Games App</h1>
+    
+    <div class="tab-navigation">
+        <button class="tab-button active" onclick="openTab('calculator')">Calculator</button>
+        <button class="tab-button" onclick="openTab('guessing-game')">Guessing Game</button>
+        <button class="tab-button" onclick="openTab('memory-game')">Memory Game</button>
+    </div>
+    
+    <div id="calculator" class="tab-content active section">
+        <h2>Calculator</h2>
+        <div class="calculator">
+            <div class="calculator-display" id="calc-display">0</div>
+            <button class="clear" onclick="clearCalculator()">C</button>
+            <button onclick="appendToDisplay('(')">(</button>
+            <button onclick="appendToDisplay(')')">)</button>
+            <button class="operator" onclick="appendToDisplay('/')">/</button>
+            <button onclick="appendToDisplay('7')">7</button>
+            <button onclick="appendToDisplay('8')">8</button>
+            <button onclick="appendToDisplay('9')">9</button>
+            <button class="operator" onclick="appendToDisplay('*')">×</button>
+            <button onclick="appendToDisplay('4')">4</button>
+            <button onclick="appendToDisplay('5')">5</button>
+            <button onclick="appendToDisplay('6')">6</button>
+            <button class="operator" onclick="appendToDisplay('-')">-</button>
+            <button onclick="appendToDisplay('1')">1</button>
+            <button onclick="appendToDisplay('2')">2</button>
+            <button onclick="appendToDisplay('3')">3</button>
+            <button class="operator" onclick="appendToDisplay('+')">+</button>
+            <button onclick="appendToDisplay('0')">0</button>
+            <button onclick="appendToDisplay('.')">.</button>
+            <button onclick="backspace()">⌫</button>
+            <button class="operator" onclick="calculate()">=</button>
+        </div>
+    </div>
+    
+    <div id="guessing-game" class="tab-content section">
+        <h2>Number Guessing Game</h2>
+        <div class="guessing-game">
+            <p>Guess a number between 1 and 100!</p>
+            <input type="number" id="guess-input" min="1" max="100">
+            <div>
+                <button onclick="checkGuess()">Submit Guess</button>
+                <button onclick="resetGuessingGame()">New Game</button>
+            </div>
+            <div class="message" id="guess-message"></div>
+            <p>Guesses: <span id="guess-count">0</span></p>
+        </div>
+    </div>
+    
+    <div id="memory-game" class="tab-content section">
+        <h2>Memory Matching Game</h2>
+        <div class="memory-game" id="memory-board"></div>
+        <div class="memory-stats">
+            <p>Moves: <span id="moves">0</span></p>
+            <p>Matches: <span id="matches">0</span>/8</p>
+        </div>
+        <div class="memory-controls">
+            <button onclick="startMemoryGame()">New Game</button>
+        </div>
+    </div>
+
+    <script>
+        // Tab Navigation
+        function openTab(tabId) {
+            // Hide all tab contents
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            // Remove active class from all tab buttons
+            const tabButtons = document.getElementsByClassName('tab-button');
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+            }
+            
+            // Show the selected tab content and mark button as active
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Calculator Functions
+        let currentDisplay = '0';
+        const display = document.getElementById('calc-display');
+        
+        function updateDisplay() {
+            display.textContent = currentDisplay;
+        }
+        
+        function appendToDisplay(value) {
+            if (currentDisplay === '0' && value !== '.') {
+                currentDisplay = value;
+            } else {
+                currentDisplay += value;
+            }
+            updateDisplay();
+        }
+        
+        function clearCalculator() {
+            currentDisplay = '0';
+            updateDisplay();
+        }
+        
+        function backspace() {
+            if (currentDisplay.length === 1) {
+                currentDisplay = '0';
+            } else {
+                currentDisplay = currentDisplay.slice(0, -1);
+            }
+            updateDisplay();
+        }
+        
+        function calculate() {
+            try {
+                currentDisplay = eval(currentDisplay).toString();
+                updateDisplay();
+            } catch (error) {
+                currentDisplay = 'Error';
+                updateDisplay();
+                setTimeout(clearCalculator, 1000);
+            }
+        }
+        
+        // Number Guessing Game Functions
+        let targetNumber = Math.floor(Math.random() * 100) + 1;
+        let guessCount = 0;
+        
+        function checkGuess() {
+            const guessInput = document.getElementById('guess-input');
+            const message = document.getElementById('guess-message');
+            const guessCountElement = document.getElementById('guess-count');
+            
+            const userGuess = parseInt(guessInput.value);
+            
+            if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+                message.textContent = 'Please enter a valid number between 1 and 100';
+                return;
+            }
+            
+            guessCount++;
+            guessCountElement.textContent = guessCount;
+            
+            if (userGuess === targetNumber) {
+                message.textContent = `Congratulations! You guessed the number in ${guessCount} tries!`;
+            } else if (userGuess < targetNumber) {
+                message.textContent = 'Too low! Try a higher number.';
+            } else {
+                message.textContent = 'Too high! Try a lower number.';
+            }
+            
+            guessInput.value = '';
+            guessInput.focus();
+        }
+        
+        function resetGuessingGame() {
+            targetNumber = Math.floor(Math.random() * 100) + 1;
+            guessCount = 0;
+            document.getElementById('guess-count').textContent = '0';
+            document.getElementById('guess-message').textContent = '';
+            document.getElementById('guess-input').value = '';
+        }
+        
+        // Memory Game Functions
+        const memoryBoard = document.getElementById('memory-board');
+        let cards = [];
+        let hasFlippedCard = false;
+        let lockBoard = false;
+        let firstCard, secondCard;
+        let moves = 0;
+        let matches = 0;
+        
+        const emojis = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'];
+        
+        function startMemoryGame() {
+            // Reset game stats
+            moves = 0;
+            matches = 0;
+            document.getElementById('moves').textContent = moves;
+            document.getElementById('matches').textContent = `${matches}/8`;
+            
+            // Create pairs of cards
+            const cardValues = [...emojis, ...emojis];
+            
+            // Shuffle cards
+            cardValues.sort(() => 0.5 - Math.random());
+            
+            // Clear the board
+            memoryBoard.innerHTML = '';
+            cards = [];
+            
+            // Create cards
+            cardValues.forEach((value, index) => {
+                const card = document.createElement('div');
+                card.classList.add('memory-card');
+                card.dataset.value = value;
+                card.dataset.index = index;
+                card.addEventListener('click', flipCard);
+                memoryBoard.appendChild(card);
+                cards.push(card);
+            });
+        }
+        
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+            
+            this.classList.add('flipped');
+            this.textContent = this.dataset.value;
+            
+            if (!hasFlippedCard) {
+                // First click
+                hasFlippedCard = true;
+                firstCard = this;
+                return;
+            }
+            
+            // Second click
+            secondCard = this;
+            moves++;
+            document.getElementById('moves').textContent = moves;
+            
+            checkForMatch();
+        }
+        
+        function checkForMatch() {
+            const isMatch = firstCard.dataset.value === secondCard.dataset.value;
+            
+            if (isMatch) {
+                disableCards();
+                matches++;
+                document.getElementById('matches').textContent = `${matches}/8`;
+                
+                if (matches === 8) {
+                    setTimeout(() => {
+                        alert(`Congratulations! You won in ${moves} moves!`);
+                    }, 500);
+                }
+            } else {
+                unflipCards();
+            }
+        }
+        
+        function disableCards() {
+            firstCard.removeEventListener('click', flipCard);
+            secondCard.removeEventListener('click', flipCard);
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+            
+            resetBoard();
+        }
+        
+        function unflipCards() {
+            lockBoard = true;
+            
+            setTimeout(() => {
+                firstCard.classList.remove('flipped');
+                secondCard.classList.remove('flipped');
+                firstCard.textContent = '';
+                secondCard.textContent = '';
+                
+                resetBoard();
+            }, 1000);
+        }
+        
+        function resetBoard() {
+            [hasFlippedCard, lockBoard] = [false, false];
+            [firstCard, secondCard] = [null, null];
+        }
+        
+        // Initialize the app
+        window.onload = function() {
+            updateDisplay();
+            startMemoryGame();
+        };
+    </script>
+</body>
+</html>
